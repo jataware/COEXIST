@@ -1,0 +1,117 @@
+Data Required:
+@- Total Population (agePopulationTotal)
+
+@- Population binned into 10 year blocks
+,0-9,10-19,20-29,30-39,40-49,50-59,60-69,70-79,80+
+
+@- Social mixing: 
+   # ageSocialMixingBaseline: (provided in data/) NORMAL NON-COVID age-group by age-group matrix (http://www.socialcontactdata.org/tools/ no ETH data) 
+   # ageSocialMixingDistancing: (provided in data/) COVID Social distance measure
+
+@- Hospital Social Mixing: defaulted to 3 (higher mixing with COVID folk)
+    # elevatedMixingRatioInHospital = 3.
+
+@- Travel: Gamma distribution params for reduction in travel (model assumes [age-mixing]^2 for those travelling):
+
+    travelMaxTime = 200,
+    travelBaseRate = 5e-4, # How many people normally travel back to the country per day # TODO - get data
+    travelDecline_mean = 15.,
+    travelDecline_slope = 1.,
+    
+    travelInfection_peak = 1e-1,
+    travelInfection_maxloc = 10.,
+    travelInfection_shape = 2., 
+
+- # Symptom rate in general non-hospitalized population and Symptom rate in hospitalized population from:
+
+    f_symptoms_nonCOVID(
+         realTime, 
+         symptomsIliRCGP = 15./100000., # Symptom rate in general non-hospitalized population
+         symptomsRespInHospitalFAEs = 1.1/17.1, # Symptom rate in hospitalized population
+
+
+- transmissionInfectionStage = np.array([0.001, 0.1, 0.6, 0.5]) # We vary this during model fitting
+   # These numbers should represent rate of transmission given contact [will be multiplied by social mixing matrices]
+
+- Quarantine:
+    nDaysInHomeIsolation = 14.,
+    timeToIsolation = 0.5,
+
+- Policy Timelines:  Enter desired dates...
+
+	# Policy changes (on social distancing for now) (TODO - possibly make more changes)
+	tStartSocialDistancing = pd.to_datetime("2020-03-23", format="%Y-%m-%d"),
+ 	tStopSocialDistancing = pd.to_datetime("2025-03-23", format="%Y-%m-%d"),
+                  
+	tStartImmunityPassports = pd.to_datetime("2025-03-23", format="%Y-%m-%d"),
+	tStopImmunityPassports = pd.to_datetime("2025-03-23", format="%Y-%m-%d"),
+                  
+	tStartQuarantineCaseIsolation = pd.to_datetime("2025-03-23", format="%Y-%m-%d"),
+	tStopQuarantineCaseIsolation = pd.to_datetime("2025-03-23", format="%Y-%m-%d"),
+
+# From provided .csv files in ~/data/
+
+- Hospitalization:
+  @ ageHospitalisationRateBaseline = pd.read_csv('data/clean_hosp-epis-stat-admi-summ-rep-2015-16-rep_table_6.csv', sep=',').iloc[:,-1].values
+  @ ageHospitalisationRecoveryRateBaseline = 1./pd.read_csv('data/clean_10641_LoS_age_provider_suppressed.csv', sep=',').iloc[:,-1].values
+  @ ageNhsClinicalStaffPopulationRatio = pd.read_csv('data/clean_nhsclinicalstaff.csv', sep=',').iloc[:,-1].values
+
+
+# Extra rate of hospitalization due to COVID-19 infection stages
+# Symptom to hospitalization is 5.76 days on average (Imperial #8)
+
+   infToHospitalExtra = np.array([1e-4, 1e-3, 2e-2, 1e-2])
+
+
+# We do know at least how age affects these risks:
+# For calculations see data_cleaning_py.ipynb, calculations from CHESS dataset as per 05 Apr
+@ relativeAdmissionRisk_given_COVID_by_age = np.array([-0.94886625, -0.96332087, -0.86528671, -0.79828999, -0.61535305, -0.35214767,  0.12567034,  0.85809052,  3.55950368])
+
+riskOfAEAttandance_by_age = np.array([0.41261361, 0.31560648, 0.3843979 , 0.30475704, 0.26659415, 0.25203475, 0.24970244, 0.31549102, 0.65181376])
+
+
+- Disease Progression:
+   # For calculations see data_cleaning_py.ipynb, calculations from NHS England dataset as per 05 Apr
+    relativeDeathRisk_given_COVID_by_age = np.array([-0.99742186, -0.99728639, -0.98158438, -0.9830432 , -0.82983414, -0.84039294,  0.10768979,  0.38432409,  5.13754904])
+
+   #ageRelativeDiseaseSeverity = np.array([-0.8, -0.6, -0.3, -0.3, -0.1, 0.1, 0.35, 0.4, 0.5]) # FIXED (above) - this is a guess, find data and fix
+   #ageRelativeRecoverySpeed = np.array([0.2]*5+[-0.1, -0.2, -0.3, -0.5]) # TODO - this is a guess, find data and fix
+   ageRelativeRecoverySpeed = np.array([0.]*9) # For now we make it same for everyone, makes calculations easier
+
+# For calculations see data_cleaning_py.ipynb, calculations from NHS England dataset as per 05 Apr
+caseFatalityRatioHospital_given_COVID_by_age = np.array([0.00856164, 0.03768844, 0.02321319, 0.04282494, 0.07512237, 0.12550367, 0.167096  , 0.37953452, 0.45757006])
+
+
+Assumptions:
+
+- state transitions
+   # No transition between age groups
+   # No transitions between testing states without performing a test
+   # No transitions into S or out of D and R_IgG (R2) health states. (Cannot get re-infected)
+
+- Rate of hospitalization for a patient at a given age and stage of infection will be computed as a product of two independent rates, age (older people are generally more at risk of hospitalization), and  how far the patient has progressed into the disease.
+
+- Social mixing is contacts per day for an individual
+
+- Hospital mixing ratio (higher S to I due to close contact)# The general experience is that infections spread faster in a hospital environment.
+
+- TRAVEL:
+  # - people's age distribution in travel is square of the usual age distribution
+  # - travel rates declined from a base rate as a sigmoid due to border closures, with given mean and slope
+  # - infection rates due to travel are modeled as a gamma pdf over time, with given peak value, loc, and scale parameter
+
+- INFECTIONS: All new infections, given infected people on all different isolation states (normal, home, hospital). We use the following assumptions:
+    
+    - Infectiousness only depends on infection stage, not age or location
+    
+    - Hospitalized people are assumed to only mix with other hospitalized people (this includes staff!), in a non-age-dependent manner: withinHospitalSocialMixing
+    
+    If policySocialDistancing is True
+    - Non- and home-isolated people mix with non- and home isolated via ageSocialMixingDistancing (averaging interactions)
+    
+    If policySocialDistancing is False, we assume home-isolation is taken more seriously, but with little effect on non-isolated people 
+    - Non-isolated people mix with each other via ageSocialMixingBaseline, and with home-isolated people via ageSocialMixingIsolation
+    - Home-isolated people do not mix with each other
+
+-  Hospitalization and recovery rates
+    # We assume for now that these only depend on age and disease progression, not on testing state 
