@@ -6,8 +6,6 @@ from scipy.special import expit, binom
 
 import pandas as pd
 
-# import xlrd
-
 import copy
 import warnings
 
