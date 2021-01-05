@@ -7,3 +7,5 @@
   - Expose and aggregrate input parameters to allow for easier, SME-based model exploration
 
 
+#### For input parameters documentation, click [HERE](https://docs.google.com/document/d/1ogHvwDGmD_6R5y652rO71h1cgSZ_VNGxhIPm450OMK8/edit?usp=sharing)
+
