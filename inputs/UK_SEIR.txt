@@ -4,6 +4,9 @@ Data Required:
 @- Population binned into 10 year blocks
 ,0-9,10-19,20-29,30-39,40-49,50-59,60-69,70-79,80+
 
+
+0,9,19,29,39,49,59,69,79
+
 @- Social mixing: 
    # ageSocialMixingBaseline: (provided in data/) NORMAL NON-COVID age-group by age-group matrix (http://www.socialcontactdata.org/tools/ no ETH data) 
    # ageSocialMixingDistancing: (provided in data/) COVID Social distance measure
@@ -22,7 +25,7 @@ Data Required:
     travelInfection_maxloc = 10.,
     travelInfection_shape = 2., 
 
-- # Symptom rate in general non-hospitalized population and Symptom rate in hospitalized population from:
+- @ # Symptom rate in general non-hospitalized population and Symptom rate in hospitalized population from:
 
     f_symptoms_nonCOVID(
          realTime, 
@@ -30,14 +33,14 @@ Data Required:
          symptomsRespInHospitalFAEs = 1.1/17.1, # Symptom rate in hospitalized population
 
 
-- transmissionInfectionStage = np.array([0.001, 0.1, 0.6, 0.5]) # We vary this during model fitting
+- @ transmissionInfectionStage = np.array([0.001, 0.1, 0.6, 0.5]) # We vary this during model fitting
    # These numbers should represent rate of transmission given contact [will be multiplied by social mixing matrices]
 
 - Quarantine:
-    nDaysInHomeIsolation = 14.,
-    timeToIsolation = 0.5,
+    @nDaysInHomeIsolation = 14.,
+    @timeToIsolation = 0.5,
 
-- Policy Timelines:  Enter desired dates...
+- @Policy Timelines:  Enter desired dates...
 
 	# Policy changes (on social distancing for now) (TODO - possibly make more changes)
 	tStartSocialDistancing = pd.to_datetime("2020-03-23", format="%Y-%m-%d"),
@@ -60,23 +63,23 @@ Data Required:
 # Extra rate of hospitalization due to COVID-19 infection stages
 # Symptom to hospitalization is 5.76 days on average (Imperial #8)
 
-   infToHospitalExtra = np.array([1e-4, 1e-3, 2e-2, 1e-2])
+   @infToHospitalExtra = np.array([1e-4, 1e-3, 2e-2, 1e-2])
 
 
 # We do know at least how age affects these risks:
 # For calculations see data_cleaning_py.ipynb, calculations from CHESS dataset as per 05 Apr
 @ relativeAdmissionRisk_given_COVID_by_age = np.array([-0.94886625, -0.96332087, -0.86528671, -0.79828999, -0.61535305, -0.35214767,  0.12567034,  0.85809052,  3.55950368])
 
-riskOfAEAttandance_by_age = np.array([0.41261361, 0.31560648, 0.3843979 , 0.30475704, 0.26659415, 0.25203475, 0.24970244, 0.31549102, 0.65181376])
+@ riskOfAEAttandance_by_age = np.array([0.41261361, 0.31560648, 0.3843979 , 0.30475704, 0.26659415, 0.25203475, 0.24970244, 0.31549102, 0.65181376])
 
 
 - Disease Progression:
    # For calculations see data_cleaning_py.ipynb, calculations from NHS England dataset as per 05 Apr
-    relativeDeathRisk_given_COVID_by_age = np.array([-0.99742186, -0.99728639, -0.98158438, -0.9830432 , -0.82983414, -0.84039294,  0.10768979,  0.38432409,  5.13754904])
+   @ relativeDeathRisk_given_COVID_by_age = np.array([-0.99742186, -0.99728639, -0.98158438, -0.9830432 , -0.82983414, -0.84039294,  0.10768979,  0.38432409,  5.13754904])
 
-   #ageRelativeDiseaseSeverity = np.array([-0.8, -0.6, -0.3, -0.3, -0.1, 0.1, 0.35, 0.4, 0.5]) # FIXED (above) - this is a guess, find data and fix
-   #ageRelativeRecoverySpeed = np.array([0.2]*5+[-0.1, -0.2, -0.3, -0.5]) # TODO - this is a guess, find data and fix
-   ageRelativeRecoverySpeed = np.array([0.]*9) # For now we make it same for everyone, makes calculations easier
+   @ NOT USED: ageRelativeDiseaseSeverity = np.array([-0.8, -0.6, -0.3, -0.3, -0.1, 0.1, 0.35, 0.4, 0.5]) # FIXED (above) - this is a guess, find data and fix
+   @ ageRelativeRecoverySpeed = np.array([0.2]*5+[-0.1, -0.2, -0.3, -0.5]) # TODO - this is a guess, find data and fix
+   @ ageRelativeRecoverySpeed = np.array([0.]*9) # For now we make it same for everyone, makes calculations easier
 
 # For calculations see data_cleaning_py.ipynb, calculations from NHS England dataset as per 05 Apr
 caseFatalityRatioHospital_given_COVID_by_age = np.array([0.00856164, 0.03768844, 0.02321319, 0.04282494, 0.07512237, 0.12550367, 0.167096  , 0.37953452, 0.45757006])
