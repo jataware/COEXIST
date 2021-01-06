@@ -1,5 +1,5 @@
 ### COVID SEIR Model
-#### Based on UK SEIR [COEXIST MODEL](https://github.com/gbohner/coexist)
+#### Based on UK SEIR [COEXIST MODEL](https://github.com/gbohner/coexist) provided by MIT License Copyright (c) 2020 Gergo Bohner
 
 #### An abstaction of coexist model to: 
   - Apply the model to any geopolitical area of interest
