@@ -4,9 +4,10 @@
 
 > Add requirements.txt
 
+> amplify model discussion
+
 > clone and verify run
 
-> amplify model discussion
 
 
 ## COVID SEIR Model:
@@ -106,7 +107,7 @@ SME parameters are assumed to require subject matter expertise for detailed base
   | Parameter    | Description             |
   | ------------ | ----------------------- |
   | "transmissionInfectionStage"|The rate of transmission given contact and your current Health State. For example, if transmissionInfectionStage = [0.001, 0.1, 0.6, 0.5] and you are Asymptomatic there is a 10% chance you will infect someone you contact; a 60% chance if you are in the “Early/High Viral load” health state.|
-  | "infToHospitalExtra" | Extra rate of hospitalization above baseline given current Health State. For example if infToHospitalExtra = [1e-4, 1e-3, 2e-2, 1e-2] and you are Asymptomatic there is a 0.10% chance you will be admitted to the hospital; a 2.0% chance if you are in the “Early/High Viral load” health state. Note: This is difficult to approximate due to the high number of unknown cases.
+  | "infToHospitalExtra" | Extra rate of hospitalization above baseline given current Health State. For example if infToHospitalExtra = [1e-4, 1e-3, 2e-2, 1e-2] and you are `Asymptomatic` ("A") there is a 0.10% chance you will be admitted to the hospital; a 2.0% chance if you are in the `Early/High Viral load` ("I2") health state. Note: This is difficult to approximate due to the high number of unknown cases.
   
   </center>
     - Note that these parameters are _independent_ of age
