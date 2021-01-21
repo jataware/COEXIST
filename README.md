@@ -1,3 +1,12 @@
+> TO DO:
+
+> Add section on social mixing matrices
+
+> Add requirements.txt
+
+> clone and verify run
+
+
 ## COVID SEIR Model:
 This repository, an abstraction of the UK-specific [COEXIST Model](https://github.com/gbohner/coexist), enables users to choose any geographic region and run an SEIR simulation. It is purpose-built to predict health state progression for COVID, but can be updated for different viruses. 
 
