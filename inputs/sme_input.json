@@ -7,13 +7,13 @@
     "yearly_baseline_admissions":         [ 612518,  643932, 1551717, 1647005, 1535305, 1997061, 2402483, 2509541, 2170584],
     "ageHospitalMeanLengthOfStay":        [    2.1,     2.7,     2.9,     3.2,     4.6,     4.9,     5.6,     6.6,     8.9],
     "ageNhsClinicalStaffPopulationRatio": [    0.0,     0.0,   0.019,   0.019,   0.019,   0.019,   0.019,     0.0,     0.0],
-    "riskOfAEAttandance_by_age":          [ 0.4126,  0.3156,  0.3843,  0.3047   0.2665,  0.2520,  0.2497,  0.3155,  0.6518],
-    "ageTestingData":                     [    100,     900      200      10,      900,    1000,    1200,     400,    1200],
+    "riskOfAEAttandance_by_age":          [ 0.4126,  0.3156,  0.3843,  0.3047,   0.2665,  0.2520,  0.2497,  0.3155,  0.6518],
+    "ageTestingData":                     [    100,     900,     200,      10,      900,    1000,    1200,     400,    1200],
 
 
     "transmissionInfectionStage": [0.001, 0.1, 0.6, 0.5],
     
-    "infToHospitalExtra": [0.0001, 0.001, 0.02, 0.01],
+    "infToHospitalExtra": [0.0001, 0.001, 0.02, 0.01]
 
 }
 
