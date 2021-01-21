@@ -1949,12 +1949,12 @@ if __name__ == "__main__":
     #out1 = out1/sum(agePopulationTotal)
 
     df = filter_df(array_to_df(total_days, out1), arrivalType)
-    df.to_csv(f"{data_dir}/results/{outfile}")
+    df.to_csv(f"{workdir}/results/{outfile}")
     
     end_it = datetime.now()
     print(f"Runtime = {end_it-start_it}")
     print("\n")
-    print(f"Results written to {data_dir}/{outfile}")
+    print(f"Results written to {workdir}/results/{outfile}")
     print("\n")
 
 
