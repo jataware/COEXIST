@@ -139,12 +139,13 @@ ageNhsClinicalStaffPopulationRatio = np.array(sme_input["ageNhsClinicalStaffPopu
 # Rate of transmission given contact for differnt states [exposed, asymptomatic, I1 (symptomatic early), I2 (symptomatic late)]
 transmissionInfectionStage = np.array(sme_input["transmissionInfectionStage"])
 
-# Number of Days in Isolation
-nDaysInHomeIsolation = user_input["nDaysInHomeIsolation"]
 
 ############# USER INPUT PARAMETERS ############# from "USER_build_data.ipynb"
 with open(f"{data_dir}/user_input.json") as jf:
     user_input = json.load(jf)
+
+# Number of Days in Isolation
+nDaysInHomeIsolation = user_input["nDaysInHomeIsolation"]
 
 tStartSocialDistancing = pd.to_datetime(
     user_input["tStartSocialDistancing"], format="%Y-%m-%d"
@@ -1949,12 +1950,12 @@ if __name__ == "__main__":
     #out1 = out1/sum(agePopulationTotal)
 
     df = filter_df(array_to_df(total_days, out1), arrivalType)
-    df.to_csv(f"{workdir}/results/{outfile}")
+    df.to_csv(f"{data_dir}/results/{outfile}")
     
     end_it = datetime.now()
     print(f"Runtime = {end_it-start_it}")
     print("\n")
-    print(f"Results written to {workdir}/results/{outfile}")
+    print(f"Results written to {data_dir}/{outfile}")
     print("\n")
 
 
