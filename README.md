@@ -60,7 +60,7 @@ Our variant of the COEXIST model reduces the initial data collection/cleaning re
 We seperate the input parameter requirements into two broad categories: 1) SME parameters and 2) General Modeler Parameters where each category has its own distinct groupings. Below is a description of each required parameter for the two categories.
 
 ### SME Parameter Category:
-SME parameters are assumed to require subject matter expertise for detailed baseline hospital and COVID data for the geographic area of interest. Parameters are updated in the `sme_input.json` file [HERE](/Users/travishartman/Desktop/COEXIST_repo/inputs/sme_input.json). For practical steps in populating the `sme_input.json` and running the model, see the [Quick Start](#quick-start) section. The two SME Parameter Groups are:
+SME parameters are assumed to require subject matter expertise for detailed baseline hospital and COVID data for the geographic area of interest. Parameters are updated in the `sme_input.json` file [HERE](https://github.com/jataware/COEXIST/blob/main/inputs/sme_input.json). For practical steps in populating the `sme_input.json` and running the model, see the [Quick Start](#quick-start) section. The two SME Parameter Groups are:
 
   1. **Age-Group Parameters**. These are baseline, not COVID-related hospital data where each parameter is binned into the following age blocks according to the descriptions below:
 
@@ -102,7 +102,7 @@ SME parameters are assumed to require subject matter expertise for detailed base
 
 
 ### General Modeler Parameter Category:
-General Modeler Parameters are assumed to be readily available and open to the public for the geographic area of interest. Parameters are updated in the `user_input.json` file [HERE](/Users/travishartman/Desktop/COEXIST_repo/inputs/user_input.json). For practical steps in populating the `user_input.json` and running the model, see the [Quick Start](#quick-start) section. The three General Modeler Parameter Groups are:
+General Modeler Parameters are assumed to be readily available and open to the public for the geographic area of interest. Parameters are updated in the `user_input.json` file [HERE](https://github.com/jataware/COEXIST/blob/main/inputs/user_input.json). For practical steps in populating the `user_input.json` and running the model, see the [Quick Start](#quick-start) section. The three General Modeler Parameter Groups are:
 
   1. **Age-Group Parameters**. Each parameter is binned into the following age blocks according to the descriptions below:
 
