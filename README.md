@@ -6,6 +6,8 @@
 
 > clone and verify run
 
+> amplify model discussion
+
 
 ## COVID SEIR Model:
 This repository, an abstraction of the UK-specific [COEXIST Model](https://github.com/gbohner/coexist), enables users to choose any geographic region and run an SEIR simulation. It is purpose-built to predict health state progression for COVID, but can be updated for different viruses. 
