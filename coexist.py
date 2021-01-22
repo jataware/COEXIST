@@ -53,21 +53,18 @@ import itertools
 import json
 
 ################### COMMAND LINE RUN
-# $ python3 coexist.py -days=200 -typ=current -out=stateResults.csv
+# $ python3 coexist.py -days=200 -out=stateResults.csv
 
 ################### COMMAND LINE ARGS
 
 parser = argparse.ArgumentParser(description="Get number of days to run simulation")
 parser.add_argument("-days", dest="total_days", type=int, help="Number of days to run simulation")
 parser.add_argument("-out", dest="outfile", type=str, help="Name of output file")
-parser.add_argument("-typ", dest="arrivalType", type=str, help="'current' or 'new'")
 
 args = parser.parse_args()
 
 total_days = args.total_days
 outfile = args.outfile
-arrivalType = args.arrivalType
-
 
 # Set Working/Data dirs
 workdir = os.getcwd()
@@ -178,9 +175,7 @@ relativeAdmissionRisk_given_COVID_by_age -= 1
 
 # Risk of Death by Age
 totalDeaths_byAge_regroupLinear = user_input["deaths_by_age"]
-relativeDeathRisk_given_COVID_by_age = (
-    totalDeaths_byAge_regroupLinear / agePopulationTotal
-)
+relativeDeathRisk_given_COVID_by_age = (totalDeaths_byAge_regroupLinear / agePopulationTotal)
 relativeDeathRisk_given_COVID_by_age /= np.mean(relativeDeathRisk_given_COVID_by_age)
 relativeDeathRisk_given_COVID_by_age -= 1
 
@@ -1876,54 +1871,28 @@ def solveSystem(stateTensor_init, total_days, samplesPerDay=np.inf, **kwargs):
 
 ### df Clean up for folding on all states except Health States
 def array_to_df(total_days, result):
+    
+    reshape = 2*nAge*nHS*nIso*nTest*total_days
+    sim_days = [x+1 for x in range(total_days)]
 
-    reshape = 2 * nAge * nHS * nIso * nTest * total_days
-    sim_days = [x + 1 for x in range(total_days)]
+    iterables=[['current','new'],
+               ["0-9","10-19","20-29","30-39","40-49","50-59","60-69","70-79","80+"],
+               ["susceptible", "exposed", "asymptomatic", "infected1", "infected2", "recovered1", "recovered2", "deceased"],
+               ['distancing','quarantined','hospitalized','hospStaff'],
+               ["neg_noTest", "pos_test","pos_antibody", "pos_both"],
+               sim_days
+          ]
+    index = pd.MultiIndex.from_product(iterables, names=['arrivalType','ageGroup','healthState','isoState','testState','simDay'])
 
-    iterables = [
-        ["current", "new"],
-        ["0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79", "80+"],
-        ["susceptible", "exposed", "asymptomatic", "infected1", "infected2", "recovered1", "recovered2", "deceased"],
-        ["distancing", "quarantined", "hospitalized", "hospStaff"],
-        ["neg_noTest", "pos_test", "pos_antibody", "pos_both"],
-        sim_days,
-    ]
-    index = pd.MultiIndex.from_product(
-        iterables,
-        names=[
-            "arrivalType",
-            "ageGroup",
-            "healthState",
-            "isoState",
-            "testState",
-            "simDay",
-        ],
-    )
+    df = pd.DataFrame(result.reshape(reshape, 1),index=index).stack().reset_index().rename(columns={0: "value"})
 
-    df = (
-        pd.DataFrame(result.reshape(reshape, 1), index=index)
-        .stack()
-        .reset_index()
-        .rename(columns={0: "value"})
-    )
-
-    # delete phantom column "level_6"
+    #delete phantom column "level_6"
     for col in df.columns.to_list():
         if "level" in col:
             del df[col]
-
-    return df
-
-
-def filter_df(df, arrivalType):
-    df = df[df["arrivalType"] == arrivalType]
-
-    df = df[["simDay", "value", "healthState"]]
-
-    df = pd.DataFrame(df.groupby(["simDay", "healthState"]).value.sum()).unstack(1)
-    df[df < 0] = 0
-    df = df["value"]
-
+    
+    df = df.groupby(['simDay','arrivalType', 'ageGroup', 'healthState',], as_index=False)["value"].sum()
+    
     return df
 
 
@@ -1949,8 +1918,8 @@ if __name__ == "__main__":
 
     #out1 = out1/sum(agePopulationTotal)
 
-    df = filter_df(array_to_df(total_days, out1), arrivalType)
-    df.to_csv(f"{data_dir}/results/{outfile}")
+    df = array_to_df(total_days, out1)
+    df.to_csv(f"{data_dir}/results/{outfile}", index=False)
     
     end_it = datetime.now()
     print(f"Runtime = {end_it-start_it}")
