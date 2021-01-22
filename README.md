@@ -1,15 +1,3 @@
-> TO DO:
-
-> Add section on social mixing matrices
-
-> Add requirements.txt
-
-> amplify model discussion
-
-> clone and verify run
-
-
-
 ## COVID SEIR Model:
 This repository, an abstraction of the UK-specific [COEXIST Model](https://github.com/gbohner/coexist), enables users to choose any geographic region and run an SEIR simulation. It is purpose-built to predict health state progression for COVID, but can be updated for different viruses. 
 
@@ -23,7 +11,9 @@ See the COEXIST license agreement at the end of this README.
 2. [COEXIST Model Overview](#coexist-model-overview)
 3. [Input Parameters](#input-parameters)
 4. [Quick Start](#quick-start)
-5. [COEXIST License](#coexist-license)
+5. [Output Description](#output-decsription)
+6. [Dockerize](#dockerize)
+7. [COEXIST License](#coexist-license)
 
 ## Motivation
 The motivation behind this project is to abstract the UK COEXIST model to provide a robust and geographic-agnostic COVID SEIR model to analysts. The model is abstracted by:
@@ -69,7 +59,7 @@ Our variant of the COEXIST model reduces the initial data collection/cleaning re
 2. leveraging subject matter expertise to estimate parameters assumed to inaccesible to the average general modeler, and
 3. only exposing parameters that a general modeler would reasonably have access to for their chosen geography.
 
-We seperate the input parameter requirements into two broad categories: 1) SME parameters and 2) General Modeler Parameters where each category has its own distinct groupings. Below is a description of each required parameter for the two categories.
+We seperate the input parameter requirements into three broad categories: 1) SME parameters, 2) General Modeler Parameters, and 3) Social Mixing Matrices where each category has its own distinct groupings. Below is a description of each required parameter for the three categories.
 
 ### SME Parameter Category:
 SME parameters are assumed to require subject matter expertise for detailed baseline hospital and COVID data for the geographic area of interest. Parameters are updated in the `sme_input.json` file [HERE](https://github.com/jataware/COEXIST/blob/main/inputs/sme_input.json). For practical steps in populating the `sme_input.json` and running the model, see the [Quick Start](#quick-start) section. The two SME Parameter Groups are:
@@ -152,8 +142,8 @@ General Modeler Parameters are assumed to be readily available and open to the p
   | "tStartQuarantineCaseIsolation" | Datetime to start Quarantine Policy
   | "tStopQuarantineCaseIsolation" | Datetime to stop Quarantine Policy
   | "testingStartDate"| Datetime to begin simulation
-  | "CONST_DATA_START_DATE" | Start data for data ingestion; used to filter out data before this date if the data is of poor quality. **Format `YYYYMMDD`**
-  | "CONST_DATA_CUTOFF_DATE" | Stop data for data ingestion; used to filter out data after this date if the data is of poor quality. **Format `YYYYMMDD`**
+  | "CONST\_DATA\_START\_DATE" | Start data for data ingestion; used to filter out data before this date if the data is of poor quality. **Format `YYYYMMDD`**
+  | "CONST\_DATA\_CUTOFF\_DATE" | Stop data for data ingestion; used to filter out data after this date if the data is of poor quality. **Format `YYYYMMDD`**
 
 
 3. **Policy Parameter**. A parameter set by government policy.
@@ -164,6 +154,12 @@ General Modeler Parameters are assumed to be readily available and open to the p
   | --------- | ----------------------- |
   | "nDaysInHomeIsolation" | Number of days that exposed or infected people are required to isolate |
   </center>
+
+### Social Mixing Matricies Category:
+Social Mixing Matricies estimate, by age group, the average number of daily social interactions someone has with other people. There are two variants: 1) `social_mixing_BASELINE` which reflects non-COVID or "normal" social mixing ([example](https://github.com/jataware/COEXIST/blob/main/inputs/social_mixing_BASELINE.json)), and 2) `social_mixing_DISTANCE` which reflects a reduced number of interactions due to social mixing policies ([example](https://github.com/jataware/COEXIST/blob/main/inputs/social_mixing_DISTANCE.json)).
+
+The examples provided are an average of several social mixing matrices from survey data available [HERE](http://www.socialcontactdata.org/tools/). When using the tool, the age-groups need to be defined by the 10-year blocks as shiwn in the other input parameter categories. In the `mixing` directory the notebook `mixing_comparison.ipynb` has examples on how to compare and average social mixing interactions for different countries.
+
 
 ## Quick Start:
 
@@ -183,11 +179,32 @@ General Modeler Parameters are assumed to be readily available and open to the p
 		 -  `new`: Health States reflect daily count of new arrivals
 		 -  `current`: Health States reflect total count of people in the state
 	- `-out` = name of output `.csv` file
-7. Monitor progress and after completion of the simulation, run `cd ~/results/` and look for named output file.
-8. There is a helper jupyter notebook `plot_coexist_results` to plot your model results.
 
+## Output Description:
+When the model run is complete, your `<outfile>.csv` file is written to `~/results/<outfile>.csv`. The output is a csv file with the following columns:
 
-## COEXIST License
+  - `simDay`: number of days from your simulation `testingStartDate` as defined in the `user_input.json`
+  - `arrivalType`: the method of Health State count for each day. Options include:
+  
+		 -  `new`: Health States reflect daily count of new arrivals
+		 -  `current`: Health States reflect total daily count of people in the state
+  - `ageGroup`: 10-year age-group blocks
+  - `healthState`: the Health State 
+  - `value`: The daily count of people for the row's simulation day, arrival type, age group, and health state
+
+  
+There is a jupyter notebook `plot_coexist_results` that reads in your `<output>.csv` and has example plots of the data.
+
+## Dockerize:
+To build a docker image and run a container:
+
+1. Ensure you are in the `/COEXIST` directory with the `Dockerfile`
+2. Launch Docker from command line or the Docker app
+3. run `docker  build . -t coexist` to build an image named `coexist`
+4. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to build an image named `coexist`
+ 
+
+## COEXIST License:
 MIT License, Copyright (c) 2020 Gergo Bohner
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
