@@ -201,7 +201,7 @@ To build a docker image and run a container:
 1. Ensure you are in the `/COEXIST` directory with the `Dockerfile`
 2. Launch Docker from command line or the Docker app
 3. run `docker  build . -t coexist` to build an image named `coexist`
-4. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to build an image named `coexist`
+4. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation.
  
 
 ## COEXIST License:
