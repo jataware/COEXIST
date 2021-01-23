@@ -43,7 +43,7 @@ from collections import OrderedDict
 
 # OS/filesystem tools
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 import string
 import os
@@ -1868,7 +1868,6 @@ def solveSystem(stateTensor_init, total_days, samplesPerDay=np.inf, **kwargs):
 
     return out
 
-
 ### df Clean up for folding on all states except Health States
 def array_to_df(total_days, result):
     
@@ -1895,6 +1894,20 @@ def array_to_df(total_days, result):
     
     return df
 
+# convert int simday to datetime
+def num_to_date(testingStartDate, simDay):
+    temp_date = testingStartDate + timedelta(days=simDay)
+    return str(temp_date.date())
+
+# call num_to_date and reorder columns
+def clean_df(df):
+    df['timestamp'] = df.simDay.apply(lambda x: num_to_date(testingStartDate, x)) 
+
+    ts = df['timestamp']
+    df.drop(labels=['timestamp'], axis=1,inplace = True)
+    df.insert(0, 'timestamp', ts)
+
+    return df    
 
 if __name__ == "__main__":
 
@@ -1910,21 +1923,19 @@ if __name__ == "__main__":
     paramDict_default["INIT_stateTensor_init"] = stateTensor_init
 
     paramDict_current = copy.deepcopy(paramDict_default)
-    #paramDict_current[
-    #    "tStartQuarantineCaseIsolation"
-    #] = tStartQuarantineCaseIsolation
+    #paramDict_current["tStartQuarantineCaseIsolation"] = tStartQuarantineCaseIsolation
 
-    out1 = solveSystem(stateTensor_init, total_days, **paramDict_current)
+    result = solveSystem(stateTensor_init, total_days, **paramDict_current)
 
-    #out1 = out1/sum(agePopulationTotal)
+    df = clean_df(array_to_df(total_days, result))
 
-    df = array_to_df(total_days, out1)
-    df.to_csv(f"{data_dir}/results/{outfile}", index=False)
+    print(df.tail())
+    df.to_csv(f"{workdir}/results/{outfile}", index=False)
     
     end_it = datetime.now()
     print(f"Runtime = {end_it-start_it}")
     print("\n")
-    print(f"Results written to {data_dir}/{outfile}")
+    print(f"Results written to {workdir}/results/{outfile}")
     print("\n")
 
 
