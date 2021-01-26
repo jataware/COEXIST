@@ -1,8 +1,9 @@
 FROM python:3.8
 
 RUN apt-get update
-RUN apt-get install python3-pip -y
+RUN apt-get install -y python3-pip
 RUN apt-get install -y git
+RUN apt-get install -y vim
 
 WORKDIR /
 RUN git clone https://github.com/jataware/COEXIST
