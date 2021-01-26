@@ -155,16 +155,21 @@ General Modeler Parameters are assumed to be readily available and open to the p
 ### Social Mixing Matricies Category:
 Social Mixing Matricies estimate, by age group, the average number of daily social interactions someone has with other people. There are two variants: 1) `social_mixing_BASELINE` which reflects non-COVID or "normal" social mixing ([example](https://github.com/jataware/COEXIST/blob/main/inputs/social_mixing_BASELINE.json)), and 2) `social_mixing_DISTANCE` which reflects a reduced number of interactions due to social mixing policies ([example](https://github.com/jataware/COEXIST/blob/main/inputs/social_mixing_DISTANCE.json)).
 
-The examples provided are an average of several social mixing matrices from survey data available [HERE](http://www.socialcontactdata.org/tools/). When using the tool, the age-groups need to be defined by the 10-year blocks as shiwn in the other input parameter categories. In the `mixing` directory the notebook `mixing_comparison.ipynb` has examples on how to compare and average social mixing interactions for different countries.
+The examples provided are an average of several social mixing matrices from survey data available [HERE](http://www.socialcontactdata.org/tools/). When using the tool, the age-groups need to be defined by the 10-year blocks as shown in the other input parameter categories. In the `mixing` directory the notebook `mixing_comparison.ipynb` has examples on how to compare and average social mixing interactions for different countries.
+
+You may update the social mixing matrices which are defaulted for the UK. In the future we plan to build software to make this process less cumbersome
 
 ## Quick Start:
+
+### Input Parameter Updates:
+
 
 ### 1. Run from published Docker Image:
 NOTE: The data in the published image is for the United Kingdom. To change the input parameters you will need to update the input parameter files.
 
 1. run `git clone https://github.com/jataware/COEXIST.git` 
 2. run `cd your/local/folder/COEXIST/inputs` 
-3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above. You may also update `social_mixing_BASELINE.csv` and `social_mixing_DISTANCE.csv` files (or use the UK default)
 4. run `cd ~/COEXIST`
 5. run `docker run -v $PWD/inputs:/COEXIST/inputs -it jataware/coexist -days=<numberOfSimDays> -out=<outfile>.csv`
    where:
@@ -179,7 +184,7 @@ To build a docker image and run a container:
 
 1. run `git clone https://github.com/jataware/COEXIST.git` 
 2. run `cd your/local/folder/COEXIST/inputs` 
-3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above. You may also update `social_mixing_BASELINE.csv` and `social_mixing_DISTANCE.csv` files (or use the UK default)
 4. run `cd ~/COEXIST`
 5. Verify `Dockerfile` is in your current working directory
 6. Launch Docker from command line or the Docker app
@@ -196,7 +201,7 @@ To build a docker image and run a container:
 1. Clone the [COEXIST](https://github.com/jataware/COEXIST) repository to `your/local/folder`.
 2. run `cd ~/COEXIST && pip install -r requirements.txt`
 3. run `cd ~/inputs`
-4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above. You may also update `social_mixing_BASELINE.csv` and `social_mixing_DISTANCE.csv` files (or use the UK default)
 5. run `cd ~/COEXIST`
 6. run `python3 coexist.py -days=180 -out=results.csv` 
 
