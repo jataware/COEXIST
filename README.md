@@ -11,7 +11,7 @@ See the COEXIST license agreement at the end of this README.
 2. [COEXIST Model Overview](#coexist-model-overview)
 3. [Input Parameters](#input-parameters)
 4. [Quick Start](#quick-start)
-5. [Output Description](#output-decsription)
+5. [Output Description](#output-description)
 6. [Dockerize](#dockerize)
 7. [COEXIST License](#coexist-license)
 
@@ -49,8 +49,6 @@ For an extensive model description as well as acces to the well-documented code,
 
 **Table 1** - Description of Health States and test outcomes
 </center>
-
-### ADD a little more here about the model??
 
 ## Input Parameters
 Our variant of the COEXIST model reduces the initial data collection/cleaning requirements by: 
@@ -160,8 +158,46 @@ Social Mixing Matricies estimate, by age group, the average number of daily soci
 
 The examples provided are an average of several social mixing matrices from survey data available [HERE](http://www.socialcontactdata.org/tools/). When using the tool, the age-groups need to be defined by the 10-year blocks as shiwn in the other input parameter categories. In the `mixing` directory the notebook `mixing_comparison.ipynb` has examples on how to compare and average social mixing interactions for different countries.
 
-
 ## Quick Start:
+
+### 1. Run from published Docker Image:
+NOTE: The data in this image is for the UK example. To change the input parameters you will need to build your own docker image or run the model locally. 
+
+
+### 2. Build your own Docker Image:
+To build a docker image and run a container:
+
+1. run `git clone https://github.com/jataware/COEXIST.git` 
+2. run `cd your/local/folder/COEXIST` 
+3. run `cd ~/inputs/`
+4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+5. run `cd ~/COEXIST`
+6. Verify `Dockerfile` is in your current working directory
+7. Launch Docker from command line or the Docker app
+8. run `docker  build . -t coexist` to build an image named `coexist`
+9. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation
+   where:
+  
+	- `-days` = number of days to run simulation
+	- `-out` = name of output `.csv` file
+
+
+### 3. Local Run (no Docker needed):
+
+1. Clone the [COEXIST](https://github.com/jataware/COEXIST) repository to `your/local/folder`.
+2. run `cd ~/COEXIST/ && pip install -r requirements.txt`
+3. run `cd ~/inputs/`
+4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+5. run `cd ~/COEXIST`
+6. run `python3 coexist.py -days=200 -typ=current -out=results.csv` 
+
+   where:
+  
+	- `-days` = number of days to run simulation
+	- `-out` = name of output `.csv` file
+
+
+## OLD Quick StartOLD:
 
 ### General Start:
 
@@ -175,15 +211,13 @@ The examples provided are an average of several social mixing matrices from surv
    where:
   
 	- `-days` = number of days to run simulation
-	- `-typ` = the type of Health State count for each day. Options include:
-		 -  `new`: Health States reflect daily count of new arrivals
-		 -  `current`: Health States reflect total count of people in the state
 	- `-out` = name of output `.csv` file
 
 ## Output Description:
 When the model run is complete, your `<outfile>.csv` file is written to `~/results/<outfile>.csv`. The output is a csv file with the following columns:
 
-  - `simDay`: number of days from your simulation `testingStartDate` as defined in the `user_input.json`
+  - `timestamp`: number of days (in YYYY-MM-DD format) from your simulation `testingStartDate` as defined in the `user_input.json`
+  - `simDay`: integer number of days from your simulation `testingStartDate` as defined in the `user_input.json`
   - `arrivalType`: the method of Health State count for each day. Options include:
   
 		 -  `new`: Health States reflect daily count of new arrivals
@@ -192,16 +226,23 @@ When the model run is complete, your `<outfile>.csv` file is written to `~/resul
   - `healthState`: the Health State 
   - `value`: The daily count of people for the row's simulation day, arrival type, age group, and health state
 
-  
-There is a jupyter notebook `plot_coexist_results` that reads in your `<output>.csv` and has example plots of the data.
+Example slice of the output dataframe on the first simulation day (initial) for the 0-9 Age Group :
+<center>
 
-## Dockerize:
-To build a docker image and run a container:
+| timestamp  | simDay | arrivalType | ageGroup | healthState | value |
+| ---------- | -------|----------- | -------- | ----------- | ------|
+| 2020-12-15 | 1 | current | 0-9 |susceptible| 6,795,024 |
+| 2020-12-15 | 1 | current | 0-9 |exposed | 0.0 |
+| 2020-12-15 | 1 | current | 0-9 |asymptomatic | 0.0 |
+| 2020-12-15 | 1 | current | 0-9 |infected1 | 0.0 |
+| 2020-12-15 | 1 | current | 0-9 |infected2 | 0.0 |
+| 2020-12-15 | 1 | current | 0-9 |recovered1 | 0.0 |
+| 2020-12-15 | 1 | current | 0-9 |recovered2 | 0.0 |
+| 2020-12-15 | 1 | current | 0-9 |deceased | 0.0 |
+</center>
 
-1. Ensure you are in the `/COEXIST` directory with the `Dockerfile`
-2. Launch Docker from command line or the Docker app
-3. run `docker  build . -t coexist` to build an image named `coexist`
-4. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation.
+**There is a jupyter notebook `plot_coexist_results` that reads in your `<output>.csv` and has example plots of the data.**
+
  
 
 ## COEXIST License:
