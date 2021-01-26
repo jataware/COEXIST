@@ -12,7 +12,6 @@ See the COEXIST license agreement at the end of this README.
 3. [Input Parameters](#input-parameters)
 4. [Quick Start](#quick-start)
 5. [Output Description](#output-description)
-6. [Dockerize](#dockerize)
 7. [COEXIST License](#coexist-license)
 
 ## Motivation
@@ -195,23 +194,7 @@ To build a docker image and run a container:
   
 	- `-days` = number of days to run simulation
 	- `-out` = name of output `.csv` file
-
-
-## OLD Quick StartOLD:
-
-### General Start:
-
-1. Clone the [COEXIST](https://github.com/jataware/COEXIST) repository to `your/local/folder`.
-2. run `cd ~/COEXIST/ && pip install -r requirements.txt`
-3. run `cd ~/inputs/`
-4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
-5. run `cd ~/COEXIST`
-6. run `python3 coexist.py -days=200 -typ=current -out=results.csv` 
-
-   where:
-  
-	- `-days` = number of days to run simulation
-	- `-out` = name of output `.csv` file
+	
 
 ## Output Description:
 When the model run is complete, your `<outfile>.csv` file is written to `~/results/<outfile>.csv`. The output is a csv file with the following columns:
