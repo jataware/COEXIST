@@ -171,13 +171,13 @@ NOTE: The data in the published image is for the United Kingdom. To change the i
 2. run `cd your/local/folder/COEXIST/inputs` 
 3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above. You may also update `social_mixing_BASELINE.csv` and `social_mixing_DISTANCE.csv` files (or use the UK default)
 4. run `cd ~/COEXIST`
-5. run `docker run -v $PWD/inputs:/COEXIST/inputs -it jataware/coexist -days=<numberOfSimDays> -out=<outfile>.csv`
+5. run `docker run -v $PWD/inputs:/COEXIST/inputs -v $PWD/results:/COEXIST/results -it jataware/coexist -days=<numberOfSimDays> -out=<outfile>.csv`
    where:
   
 	- `-days` = number of days to run simulation
 	- `-out` = name of output `.csv` file
 
-5. Simulation results are written to the `results` folder in the Docker container.
+5. Simulation results are written to the your local `results` folder.
 
 ### 2. Build your own Docker Image:
 To build a docker image and run a container:
