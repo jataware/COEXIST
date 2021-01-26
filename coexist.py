@@ -1317,7 +1317,7 @@ def trFunc_testing(
     stateTensor,
     t,
     realStartDate,
-    # policyFunc = policyFunc_testing_symptomaticOnly,
+    #policyFunc = policyFunc_testing_symptomaticOnly,
     policyFunc=policyFunc_testing_massTesting_with_reTesting,
     inpFunc_testSpecifications=inpFunc_testSpecifications,
     trFunc_testCapacity=trFunc_testCapacity,
@@ -1349,26 +1349,12 @@ def trFunc_testing(
         testsAdministeredRate = np.zeros(stateTensor.shape + (len(testTypes),))
 
         # TODO - fix this very hacky solution accessing symptomatic ratio as a subfunc of the policy func
-        noncovid_sympRatio = kwargs["policyFunc_params"]["basic_policyFunc_params"][
-            "f_symptoms_nonCOVID"
-        ](
-            curDate,
-            **kwargs["policyFunc_params"]["basic_policyFunc_params"][
-                "f_symptoms_nonCOVID_params"
-            ],
-        )
-        noncovid_sympRatio = noncovid_sympRatio[
-            1
-        ]  # Use hospitalised patient symptom ratio
-        symptomaticRatePerDiseaseState = np.array(
-            [noncovid_sympRatio] * stateTensor.shape[1]
-        )
-        symptomaticRatePerDiseaseState[
-            3 : -(nR + 1)
-        ] = 1.0  # set the symptomatic ratio of symptomatic states to 1
-        symptomaticPeoplePerDiseaseStateInHospital = stateTensor[
-            :, :-1, 2, 0
-        ] * np.expand_dims(symptomaticRatePerDiseaseState[:-1], axis=0)
+        noncovid_sympRatio = kwargs["policyFunc_params"]["basic_policyFunc_params"]["f_symptoms_nonCOVID"](curDate, **kwargs["policyFunc_params"]["basic_policyFunc_params"]["f_symptoms_nonCOVID_params"])
+
+        noncovid_sympRatio = noncovid_sympRatio[1]  # Use hospitalised patient symptom ratio
+        symptomaticRatePerDiseaseState = np.array([noncovid_sympRatio] * stateTensor.shape[1])
+        symptomaticRatePerDiseaseState[3 : -(nR + 1)] = 1.0  # set the symptomatic ratio of symptomatic states to 1
+        symptomaticPeoplePerDiseaseStateInHospital = stateTensor[:, :-1, 2, 0] * np.expand_dims(symptomaticRatePerDiseaseState[:-1], axis=0)
 
         testsAdministeredRate[:, :-1, 2, 0, testTypes.index("PCR")] += (
             np.expand_dims(
@@ -1609,7 +1595,8 @@ def trFunc_quarantine_caseIsolation(
 def dydt_Complete(
     t,
     stateTensor_flattened,  # Might be double the normal size (as first dimension) _withNewOnlyCopy, if debugReturnNewPerDay
-    realStartDate=pd.to_datetime("2020-02-20", format="%Y-%m-%d"),
+    realStartDate = testingStartDate,
+    #realStartDate=pd.to_datetime("2020-02-20", format="%Y-%m-%d"),
     # debug
     debugTransition=False,
     debugTimestep=False,
@@ -1623,14 +1610,18 @@ def dydt_Complete(
     nTest=nTest,
     # Input functions and tensors
     # ----------------------------
+    
     # Health state updates
     trFunc_diseaseProgression=trFunc_diseaseProgression,
     trFunc_newInfections=trFunc_newInfections_Complete,
+    
     # Initial incoming travel-based infections (before restrictions)
     trFunc_travelInfectionRate_ageAdjusted=trFunc_travelInfectionRate_ageAdjusted,
+    
     # Hospitalisation and recovery
     trFunc_HospitalAdmission=trFunc_HospitalAdmission,
     trFunc_HospitalDischarge=trFunc_HospitalDischarge,
+    
     # Policy changes (on social distancing for now) (TODO - possibly make more changes)
     tStartSocialDistancing=tStartSocialDistancing,
     tStopSocialDistancing=tStopSocialDistancing,
@@ -1639,6 +1630,7 @@ def dydt_Complete(
     tStartQuarantineCaseIsolation=tStartQuarantineCaseIsolation,
     tStopQuarantineCaseIsolation=tStopQuarantineCaseIsolation,
     trFunc_quarantine=trFunc_quarantine_caseIsolation,
+    
     # Testing
     trFunc_testing=trFunc_testing,
     # policyFunc_testing = policyFunc_testing_symptomaticOnly,
@@ -1916,14 +1908,12 @@ if __name__ == "__main__":
     print(f"Started at {start_it}")
     print("Running model...")
 
-
     # # Build a dictionary out of arguments with defaults
     paramDict_default = build_paramDict(dydt_Complete)
     paramDict_default["dydt_Complete"] = dydt_Complete
     paramDict_default["INIT_stateTensor_init"] = stateTensor_init
 
     paramDict_current = copy.deepcopy(paramDict_default)
-    #paramDict_current["tStartQuarantineCaseIsolation"] = tStartQuarantineCaseIsolation
 
     result = solveSystem(stateTensor_init, total_days, **paramDict_current)
 
