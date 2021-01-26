@@ -162,19 +162,23 @@ The examples provided are an average of several social mixing matrices from surv
 ### 1. Run from published Docker Image:
 NOTE: The data in this image is for the UK example. To change the input parameters you will need to build your own docker image or run the model locally. 
 
+1. run `docker run --rm jataware/coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation
+   where:
+  
+	- `-days` = number of days to run simulation
+	- `-out` = name of output `.csv` file
 
 ### 2. Build your own Docker Image:
 To build a docker image and run a container:
 
 1. run `git clone https://github.com/jataware/COEXIST.git` 
-2. run `cd your/local/folder/COEXIST` 
-3. run `cd ~/inputs/`
-4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
-5. run `cd ~/COEXIST`
-6. Verify `Dockerfile` is in your current working directory
-7. Launch Docker from command line or the Docker app
-8. run `docker  build . -t coexist` to build an image named `coexist`
-9. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation
+2. run `cd your/local/folder/COEXIST/inputs` 
+3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+4. run `cd ~/COEXIST`
+5. Verify `Dockerfile` is in your current working directory
+6. Launch Docker from command line or the Docker app
+7. run `docker  build . -t coexist` to build an image named `coexist`
+8. run `docker run --rm coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation
    where:
   
 	- `-days` = number of days to run simulation
@@ -184,11 +188,11 @@ To build a docker image and run a container:
 ### 3. Local Run (no Docker needed):
 
 1. Clone the [COEXIST](https://github.com/jataware/COEXIST) repository to `your/local/folder`.
-2. run `cd ~/COEXIST/ && pip install -r requirements.txt`
-3. run `cd ~/inputs/`
+2. run `cd ~/COEXIST && pip install -r requirements.txt`
+3. run `cd ~/inputs`
 4. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
 5. run `cd ~/COEXIST`
-6. run `python3 coexist.py -days=200 -typ=current -out=results.csv` 
+6. run `python3 coexist.py -days=180 -out=results.csv` 
 
    where:
   
