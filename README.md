@@ -161,9 +161,6 @@ You may update the social mixing matrices which are defaulted for the UK. In the
 
 ## Quick Start:
 
-### Input Parameter Updates:
-
-
 ### 1. Run from published Docker Image:
 NOTE: The data in the published image is for the United Kingdom. To change the input parameters you will need to update the input parameter files.
 
