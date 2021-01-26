@@ -160,13 +160,19 @@ The examples provided are an average of several social mixing matrices from surv
 ## Quick Start:
 
 ### 1. Run from published Docker Image:
-NOTE: The data in this image is for the UK example. To change the input parameters you will need to build your own docker image or run the model locally. 
+NOTE: The data in the published image is for the United Kingdom. To change the input parameters you will need to update the input parameter files.
 
-1. run `docker run --rm jataware/coexist -days=<numberOfSimDays> -out=<outfile>.csv` to run your model instantiation
+1. run `git clone https://github.com/jataware/COEXIST.git` 
+2. run `cd your/local/folder/COEXIST/inputs` 
+3. In the inputs directory, update the `sme_input.json` and `user_input.json` files as described above
+4. run `cd ~/COEXIST`
+5. run `docker run -v $PWD/inputs:/COEXIST/inputs -it jataware/coexist -days=<numberOfSimDays> -out=<outfile>.csv`
    where:
   
 	- `-days` = number of days to run simulation
 	- `-out` = name of output `.csv` file
+
+5. Simulation results are written to the `results` folder in the Docker container.
 
 ### 2. Build your own Docker Image:
 To build a docker image and run a container:
