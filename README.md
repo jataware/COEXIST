@@ -99,7 +99,7 @@ SME parameters are assumed to require subject matter expertise for detailed base
   
   </center>
   
-    - Note that these parameters are _independent_ of age
+>  Note that these parameters are _independent_ of age
 
 
 ### General Modeler Parameter Category:
