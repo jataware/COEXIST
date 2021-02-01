@@ -1,7 +1,7 @@
 ## COVID SEIR Model:
-This repository, an abstraction of the UK-specific [COEXIST Model](https://github.com/gbohner/coexist), enables users to choose any geographic region and run an SEIR simulation. It is purpose-built to predict health state progression for COVID, but can be updated for different viruses. 
+This repository presents an abstraction of the [COEXIST Model](https://github.com/gbohner/coexist) which was developed for COVID modeling in the UK. This version of COEXIST enables a modeler to run COEXIST over arbitrary geospatial areas. It is an enhanced SEIR model purpose-built to predict health state progression for COVID, but can be updated for different viruses. 
 
-To run the COVID model, the user must have access to basic virus and hospitalization data for their geographic region.  For a new virus, an expert level of knowledge is required to properly tune the input parameters. 
+To run the COVID model, the user must have access to basic virus and hospitalization data for their geographic region.  For a new virus, an expert level of knowledge is required to properly calibrate the input parameters.
 
 See the COEXIST license agreement at the end of this README.
 
@@ -15,16 +15,17 @@ See the COEXIST license agreement at the end of this README.
 7. [COEXIST License](#coexist-license)
 
 ## Motivation
-The motivation behind this project is to abstract the UK COEXIST model to provide a robust and geographic-agnostic COVID SEIR model to analysts. The model is abstracted by:
+The motivation behind this project is to abstract the UK COEXIST model to provide a robust and geographic-agnostic COVID SEIR model. The model is abstracted by:
 
   - Allowing the model to run for any geopolitical area of interest
   - Identifing and classifing input parameters by source. For instance, some parameters such as population are readily available; while others such as baseline hospital admission rates may require expert input to come to reasonable estimations.
-  - Reducing the exposed input parameters to modelers to allow for easier model builds and exploration
+  - Reducing the exposed input parameters to modelers to allow for easier model calibration and exploration
+  - Drastic simplification of input and parameter space; multiple spreadsheets were able to be boiled down into simple JSON parameter files
 
 ## COEXIST Model Overview
-COEXIST (COVID Exit Strategy) was developed to inform COVID-related policy decisions for the UK government by investigating the effects of testing protocols, social distancing, and quarantining.  The model was purpose-built for the UK with extensive supporting data provided by the National Health Service. Note, the CHESS data referenced in the repository is protected and unavailable. Our code obviates the need for this CHESS data by manually passing in testing data.
+COEXIST (COVID Exit Strategy) was developed to inform COVID-related policy decisions for the UK government by investigating the effects of testing protocols, social distancing, and quarantining.  The model was purpose-built for the UK with extensive supporting data provided by the National Health Service. Note, the CHESS data referenced in the repository is protected and unavailable. Our code obviates the need for this CHESS data by allowing the modeler to provide the latest testing data (e.g. yesterday's data) available directly to the simulation.
 
-For an extensive model description as well as acces to the well-documented code, see the [COEXIST Model](https://github.com/gbohner/coexist) repository.
+For an extensive model description as well as acces to the original source code, see the [COEXIST Model](https://github.com/gbohner/coexist) repository.
 
 ### States and Transistions:
 
@@ -97,6 +98,7 @@ SME parameters are assumed to require subject matter expertise for detailed base
   | "infToHospitalExtra" | Extra rate of hospitalization above baseline given current Health State. For example if infToHospitalExtra = [1e-4, 1e-3, 2e-2, 1e-2] and you are `Asymptomatic` ("A") there is a 0.10% chance you will be admitted to the hospital; a 2.0% chance if you are in the `Early/High Viral load` ("I2") health state. Note: This is difficult to approximate due to the high number of unknown cases.
   
   </center>
+  
     - Note that these parameters are _independent_ of age
 
 
@@ -236,7 +238,7 @@ Example slice of the output dataframe on the first simulation day (initial) for 
 | 2020-12-15 | 1 | current | 0-9 |deceased | 0.0 |
 </center>
 
-**There is a jupyter notebook `plot_coexist_results` that reads in your `<output>.csv` and has example plots of the data.**
+> There is a jupyter notebook `plot_coexist_results` that reads in your `<output>.csv` and has example plots of the data.
 
  
 
